@@ -2,8 +2,8 @@ package org.craftedsw.tripservicekata.trip
 
 import org.craftedsw.tripservicekata.exception.UserNotLoggedInException
 import org.craftedsw.tripservicekata.user.User
+import org.craftedsw.tripservicekata.user.UserBuilder
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 
@@ -35,22 +35,23 @@ class TripServiceTest {
     }
 
     @Test
-    fun should_not_return_any_trips_when_users_are_not_friends(){
-        var friend = User()
-        friend.addFriend(ANOTHER_USER)
-        friend.addTrip(TO_BRAZIL)
+    fun should_not_return_any_trips_when_users_are_not_friends() {
+        var friend = UserBuilder.aUser()
+                .withFriends(ANOTHER_USER)
+                .withTrips(TO_BRAZIL)
+                .build()
+
         val tripsByUser = tripService!!.getTripsByUser(friend)
 
         assertEquals(tripsByUser.size, 0)
     }
 
     @Test
-    fun should_return_friend_trips_then_users_are_friends(){
-        var friend = User()
-        friend.addFriend(ANOTHER_USER)
-        friend.addFriend(loggedInUser!!)
-        friend.addTrip(TO_BRAZIL)
-        friend.addTrip(TO_LONDON)
+    fun should_return_friend_trips_then_users_are_friends() {
+        var friend = UserBuilder.aUser()
+                .withFriends(ANOTHER_USER, loggedInUser!!)
+                .withTrips(TO_BRAZIL, TO_LONDON)
+                .build()
         val tripsByUser = tripService!!.getTripsByUser(friend)
 
         assertEquals(tripsByUser.size, 2)
