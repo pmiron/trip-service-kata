@@ -3,8 +3,8 @@ package org.craftedsw.tripservicekata.user
 import org.craftedsw.tripservicekata.trip.Trip
 
 class UserBuilder {
-    private lateinit var trips: Array<out Trip>
-    private lateinit var friends: Array<out User>
+    private var trips: Array<out Trip> = emptyArray()
+    private var friends: Array<out User> = emptyArray()
 
     fun withFriends(vararg friends: User): UserBuilder {
         this.friends = friends
