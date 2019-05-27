@@ -18,20 +18,17 @@ class TripServiceTest {
         var ANOTHER_USER = User()
         var TO_BRAZIL = Trip()
         var TO_LONDON = Trip()
-        var loggedInUser:User? = null
 
     }
 
    @Before
    fun initialize(){
        tripService = TestableTripService()
-       loggedInUser = REGISTERD_USER
    }
 
     @Test(expected = UserNotLoggedInException::class)
     fun should_throw_an_exception_when_user_is_not_logged_in() {
-        loggedInUser = GUEST
-        tripService!!.getTripsByUser(UNUSED_USER)
+        tripService!!.getTripsByUser(UNUSED_USER, GUEST)
     }
 
     @Test
@@ -41,7 +38,7 @@ class TripServiceTest {
                 .withTrips(TO_BRAZIL)
                 .build()
 
-        val tripsByUser = tripService!!.getTripsByUser(friend)
+        val tripsByUser = tripService!!.getTripsByUser(friend, REGISTERD_USER)
 
         assertEquals(tripsByUser.size, 0)
     }
@@ -49,19 +46,17 @@ class TripServiceTest {
     @Test
     fun should_return_friend_trips_then_users_are_friends() {
         var friend = UserBuilder.aUser()
-                .withFriends(ANOTHER_USER, loggedInUser!!)
+                .withFriends(ANOTHER_USER, REGISTERD_USER)
                 .withTrips(TO_BRAZIL, TO_LONDON)
                 .build()
-        val tripsByUser = tripService!!.getTripsByUser(friend)
+        val tripsByUser = tripService!!.getTripsByUser(friend, REGISTERD_USER)
 
         assertEquals(tripsByUser.size, 2)
     }
 
     class TestableTripService : TripService(){
-        override fun getLoggedUser() = loggedInUser
-
-        override fun tripsBy(user: User?): List<Trip> {
-            return user!!.trips
+        override fun tripsBy(user: User): List<Trip> {
+            return user.trips
         }
     }
 }
